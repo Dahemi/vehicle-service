@@ -3,7 +3,7 @@ import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vehicle } from './entities/vehicle.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class VehicleService {
@@ -43,5 +43,17 @@ export class VehicleService {
   }
   
   // wildcard search on car_model
+  async searchByModel(search:string): Promise<Vehicle[]> {
+    
+    // 1. Transform the input
+    const formattedSearch = search.replace('*', '%');
+
+    // 2. Use TypeORM to search 
+    return this.vehicleRepository.find({
+      where:[
+        { car_model: Like(formattedSearch)}
+      ]
+    })
+  }
 
 }

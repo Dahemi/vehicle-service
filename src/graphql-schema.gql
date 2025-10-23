@@ -23,6 +23,7 @@ scalar DateTime
 
 type Query {
   findAllVehicles: [Vehicle!]!
+  searchVehiclesByModel(search: String!): [Vehicle!]!
 }
 
 type Mutation {

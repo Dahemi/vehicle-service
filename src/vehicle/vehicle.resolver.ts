@@ -28,4 +28,8 @@ export class VehicleResolver {
     return await this.vehicleService.delete(id);
   }
 
+  @Query(() => [Vehicle])
+  searchVehiclesByModel(@Args('search') search: string):Promise<Vehicle[]> {
+    return this.vehicleService.searchByModel(search);
+  }
 }
