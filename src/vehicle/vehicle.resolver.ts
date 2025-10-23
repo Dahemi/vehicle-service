@@ -1,0 +1,31 @@
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { VehicleService } from './vehicle.service';
+import { Vehicle } from './entities/vehicle.entity';
+import { CreateVehicleInput } from './dto/create-vehicle.input';
+import { UpdateVehicleInput } from './dto/update-vehicle.input';
+
+@Resolver(() => Vehicle)
+export class VehicleResolver {
+  constructor(private readonly vehicleService: VehicleService) {}
+
+  @Query(() => [Vehicle], { name: 'findAllVehicles' })
+  findAll() {
+    return this.vehicleService.findAll();
+  }
+
+  @Mutation(() => Vehicle)
+  createVehicle(@Args('createVehicleInput') createVehicleInput: CreateVehicleInput) {
+    return this.vehicleService.create(createVehicleInput);
+  }
+
+  @Mutation(() => Vehicle)
+  updateVehicle(@Args('updateVehicleInput') updateVehicleInput: UpdateVehicleInput) {
+    return this.vehicleService.update(updateVehicleInput.id, updateVehicleInput);
+  }
+
+  @Mutation(() => Vehicle)
+  async deleteVehicle(@Args('id') id: string) {
+    return await this.vehicleService.delete(id);
+  }
+
+}
