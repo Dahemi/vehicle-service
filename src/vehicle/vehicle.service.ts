@@ -17,14 +17,12 @@ export class VehicleService {
 
   findAll(page: number, limit: number): Promise<Vehicle[]>{
 
-    const safeLimit = Math.min(Math.max(limit,1),5);
-    const safePage = Math.max(page,1);
-    const offset = (safePage -1) * safeLimit;
+    const offset = (page -1) * limit;
 
     return this.vehicleRepository.find({
       order:{ manufactured_date: 'ASC'},
       skip: offset,
-      take:safeLimit,
+      take: limit,
     });
   }
 
@@ -58,11 +56,7 @@ export class VehicleService {
 
   // wildcard search on car_model
   async searchByModel(search:string): Promise<Vehicle[]> {
-    
-    // 1. Transform the input
-    // const formattedSearch = search.replace('*', '%');
 
-    // 2. Use TypeORM to search 
     return this.vehicleRepository.find({
       where:[
         { car_model: Like(`${search}%`) }

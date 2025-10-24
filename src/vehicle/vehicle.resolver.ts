@@ -3,10 +3,15 @@ import { VehicleService } from './vehicle.service';
 import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
+import { ImportService } from 'src/import/import.service';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
-  constructor(private readonly vehicleService: VehicleService) {}
+  constructor(
+    private readonly vehicleService: VehicleService,
+    private readonly importService: ImportService,
+  ) {}
+  
 
   @Query(() => [Vehicle], { name: 'findAllVehicles' })
   findAll(
@@ -35,4 +40,16 @@ export class VehicleResolver {
   searchVehiclesByModel(@Args('search') search: string):Promise<Vehicle[]> {
     return this.vehicleService.searchByModel(search);
   }
+
+  @Mutation(() => String)
+  async importVehicles(@Args('filePath') filePath: string):Promise<string> {
+    const res = await this.importService.queueVehicleImport(filePath);
+    return res;
+  }
+  // when this mutation is called, 
+  /**
+   * NestJS adds job to queue in Redis
+   * worker picks it up
+   * executes logic in background
+   */
 }
