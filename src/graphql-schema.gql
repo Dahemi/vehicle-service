@@ -22,7 +22,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  findAllVehicles: [Vehicle!]!
+  findAllVehicles(page: Int! = 1, limit: Int! = 5): [Vehicle!]!
   searchVehiclesByModel(search: String!): [Vehicle!]!
 }
 

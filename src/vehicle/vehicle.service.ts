@@ -14,14 +14,26 @@ export class VehicleService {
   ){}
 
 
-  findAll(): Promise<Vehicle[]>{
-    return this.vehicleRepository.find();
+
+  findAll(page: number, limit: number): Promise<Vehicle[]>{
+
+    const safeLimit = Math.min(Math.max(limit,1),5);
+    const safePage = Math.max(page,1);
+    const offset = (safePage -1) * safeLimit;
+
+    return this.vehicleRepository.find({
+      order:{ manufactured_date: 'ASC'},
+      skip: offset,
+      take:safeLimit,
+    });
   }
+
 
   create(vehicleInput: CreateVehicleInput): Promise<Vehicle>{
     const newVehicle = this.vehicleRepository.create(vehicleInput);
     return this.vehicleRepository.save(newVehicle);
   }
+
 
   async update(id: string, vehicleInput: UpdateVehicleInput): Promise<Vehicle> {
     const existing = await this.vehicleRepository.findOneBy({ id });
@@ -31,6 +43,7 @@ export class VehicleService {
     Object.assign(existing, vehicleInput);
     return this.vehicleRepository.save(existing);
   }
+
 
   async delete(id: string): Promise<Vehicle> {
     const existing = await this.vehicleRepository.findOneBy({ id });
@@ -42,6 +55,7 @@ export class VehicleService {
     return vehicleToReturn as Vehicle;
   }
   
+
   // wildcard search on car_model
   async searchByModel(search:string): Promise<Vehicle[]> {
     

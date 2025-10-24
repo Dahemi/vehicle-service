@@ -9,8 +9,11 @@ export class VehicleResolver {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Query(() => [Vehicle], { name: 'findAllVehicles' })
-  findAll() {
-    return this.vehicleService.findAll();
+  findAll(
+    @Args('page',{type: () => Int, defaultValue:1}) page:number,
+    @Args('limit',{type: () => Int, defaultValue:5}) limit:number
+  ): Promise<Vehicle[]> {
+    return this.vehicleService.findAll(page, limit);
   }
 
   @Mutation(() => Vehicle)
