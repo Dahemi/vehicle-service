@@ -46,12 +46,12 @@ export class VehicleService {
   async searchByModel(search:string): Promise<Vehicle[]> {
     
     // 1. Transform the input
-    const formattedSearch = search.replace('*', '%');
+    // const formattedSearch = search.replace('*', '%');
 
     // 2. Use TypeORM to search 
     return this.vehicleRepository.find({
       where:[
-        { car_model: Like(formattedSearch)}
+        { car_model: Like(`${search}%`) }
       ]
     })
   }
