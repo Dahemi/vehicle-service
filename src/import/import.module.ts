@@ -1,8 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { ImportService } from './import.service';
 import { BullModule } from '@nestjs/bull';
-import { ImportVehicleProcessor } from './processors/import-vehicle.processor';
-import { VehicleModule } from 'src/vehicle/vehicle.module';
 import { ImportResolver } from './import.resolver';
 
 
@@ -12,11 +10,10 @@ import { ImportResolver } from './import.resolver';
     BullModule.registerQueue({
       name: 'vehicle-import',
     }),
-    forwardRef(() =>VehicleModule),
+    
   ],
   providers: [ 
-    ImportService, 
-    ImportVehicleProcessor, 
+    ImportService,  
     ImportResolver 
   ],
   exports: [ImportService],

@@ -8,7 +8,7 @@ import { ImportModule } from 'src/import/import.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Vehicle]),
-    forwardRef(() => ImportModule),
+    ImportModule,
   ],
   providers: [VehicleResolver, VehicleService],
   exports: [VehicleService],
