@@ -15,15 +15,36 @@ export class VehicleService {
 
 
 
-  findAll(page: number, limit: number): Promise<Vehicle[]>{
+  findAll(
+    page: number, 
+    limit: number,
+    sortBy?: string,
+    search?: string
+  ): Promise<Vehicle[]>{
 
+    // how many records to skip
     const offset = (page -1) * limit;
 
-    return this.vehicleRepository.find({
-      order:{ manufactured_date: 'ASC'},
+    // Build query options
+    const queryOptions: any = {
       skip: offset,
       take: limit,
-    });
+      order: {},
+    };
+
+    // Apply sorting 
+    if (sortBy === 'manufactured_date' || !sortBy) {
+      queryOptions.order.manufactured_date = 'ASC';
+    }
+
+    // Apply search filter if provided
+    if (search) {
+      queryOptions.where = {
+        car_model: Like(`%${search}%`), 
+      };
+    }
+
+    return this.vehicleRepository.find(queryOptions);
   }
 
 
@@ -54,8 +75,10 @@ export class VehicleService {
   }
   
 
-  // wildcard search on car_model
-  async searchByModel(search:string): Promise<Vehicle[]> {
+  // wildcard search on car_model 
+  /**
+   * ADDED TO 'FINDALL' METHOD
+   * async searchByModel(search:string): Promise<Vehicle[]> {
 
     return this.vehicleRepository.find({
       where:[
@@ -63,5 +86,7 @@ export class VehicleService {
       ]
     })
   }
+   */
+  
 
 }

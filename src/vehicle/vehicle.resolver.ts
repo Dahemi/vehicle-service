@@ -16,9 +16,11 @@ export class VehicleResolver {
   @Query(() => [Vehicle], { name: 'findAllVehicles' })
   findAll(
     @Args('page',{type: () => Int, defaultValue:1}) page:number,
-    @Args('limit',{type: () => Int, defaultValue:5}) limit:number
+    @Args('limit',{type: () => Int, defaultValue:10}) limit:number,
+    @Args('sortBy',{type:() => String, nullable: true}) sortBy?:string,
+    @Args('search',{type:() => String, nullable: true}) search?:string,
   ): Promise<Vehicle[]> {
-    return this.vehicleService.findAll(page, limit);
+    return this.vehicleService.findAll(page, limit, sortBy, search);
   }
 
   @Mutation(() => Vehicle)
@@ -36,10 +38,13 @@ export class VehicleResolver {
     return await this.vehicleService.delete(id);
   }
 
-  @Query(() => [Vehicle])
-  searchVehiclesByModel(@Args('search') search: string):Promise<Vehicle[]> {
-    return this.vehicleService.searchByModel(search);
+  /**
+   * @Query(() => [Vehicle])
+   * searchVehiclesByModel(@Args('search') search: string):Promise<Vehicle[]> {
+      return this.vehicleService.searchByModel(search);
   }
+   */
+  
 
   @Mutation(() => String)
   async importVehicles(@Args('filePath') filePath: string):Promise<string> {

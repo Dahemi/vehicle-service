@@ -1,0 +1,6 @@
+first_name,last_name,email,car_make,car_model,vin,manufactured_date
+Noah,Parker,noah.parker@example.com,Hyundai,Elantra,KMHD84LF4JU123456,2022-01-12
+Liam,Mitchell,liam.mitchell@example.com,Ford,Explorer,1FM5K8D82JGA12345,2019-03-25
+Avery,Evans,avery.evans@example.com,Honda,Accord,1HGCV1F30JA123456,2020-10-05
+Ethan,Cooper,ethan.cooper@example.com,Toyota,Corolla,5YFBURHE6HP123456,2021-07-19
+Harper,Turner,harper.turner@example.com,Nissan,Rogue,JN8AT2MT5HW123456,2018-09-14

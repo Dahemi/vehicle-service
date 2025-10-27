@@ -1,5 +1,21 @@
 first_name,last_name,email,car_make,car_model,vin,manufactured_date
 Michael,Brown,michael.brown@example.com,Chevrolet,Malibu,1G1ZD5ST9LF123987,2021-02-10
-Sarah,Lee,sarah.lee@example.com,Subaru,Outback,4S4BTACC5M3214567,2019-09-18
-David,Martinez,david.martinez@example.com,Nissan,Altima,1N4AL3AP5JC123654,2017-06-22
-Emily,Garcia,emily.garcia@example.com,BMW,320i,WBA8E1G51GNT23456,2022-11-05
+Sarah,Lee,sarah.lee@example.com,Mazda,MX-5 Miata,JM1NDAD70H0123456,2019-09-18
+David,Martinez,david.martinez@example.com,BMW,M3,WBS8M9C50J5G12345,2017-06-22
+Emily,Garcia,emily.garcia@example.com,Mercedes-Benz,Maybach,WDDUG8DB3KA123456,2022-11-05
+Robert,Johnson,robert.johnson@example.com,Ford,Mustang,1FA6P8CF5J5123456,2020-04-12
+Olivia,Wilson,olivia.wilson@example.com,Toyota,Matrix,2T1KR32E55C123456,2016-08-19
+James,Taylor,james.taylor@example.com,Honda,MDX,5J8YD4H52LL123456,2023-01-30
+Isabella,Thomas,isabella.thomas@example.com,Nissan,Maxima,1N4AA6AP3KC123456,2018-05-21
+William,Anderson,william.anderson@example.com,Chevrolet,Monte Carlo,2G1WW12E559123456,2015-07-09
+Sophia,Jackson,sophia.jackson@example.com,Mitsubishi,Mirage,ML32A3HJ7JH012345,2020-10-22
+Benjamin,Harris,benjamin.harris@example.com,Toyota,Mark X,JTDBT123450987654,2017-02-14
+Ava,Clark,ava.clark@example.com,Jeep,Magnum,1J4RS4GG8BC123456,2019-06-08
+Elijah,Lewis,elijah.lewis@example.com,Hyundai,Monterey,KMHFG4JG6FA123456,2021-03-19
+Charlotte,Young,charlotte.young@example.com,Infiniti,M37,JN1BY1AR8FM123456,2018-11-27
+Daniel,Hall,daniel.hall@example.com,Mercedes-Benz,ML350,4JGDA5HB0FA123456,2016-09-15
+Amelia,Allen,amelia.allen@example.com,Volkswagen,Multivan,WV2ZZZ7HZHH123456,2022-12-09
+Henry,Wright,henry.wright@example.com,Kia,Magentis,KNAFU4A25A5123456,2015-05-18
+Mia,King,mia.king@example.com,Chevrolet,Monza,1G1BL52P7SR123456,2019-08-03
+Lucas,Scott,lucas.scott@example.com,Mazda,Mazda3,JM1BPACL3L1123456,2020-02-25
+Grace,Adams,grace.adams@example.com,Tesla,Model 3,5YJ3E1EA1KF123456,2023-04-11
