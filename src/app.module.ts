@@ -7,12 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
 import { ImportModule } from './import/import.module';
 import { ExportModule } from './export/export.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
     VehicleModule,
     ImportModule,
     ExportModule,
+    NotificationModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver:ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql')
@@ -32,7 +34,8 @@ import { ExportModule } from './export/export.module';
         host:'localhost',
         port:6379
       }
-    })
+    }),
+    NotificationModule
   ],
   controllers: [],
   providers: [],

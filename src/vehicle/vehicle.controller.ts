@@ -83,22 +83,4 @@ export class VehicleController {
     };
   }
 
-  @Get('export-status/:jobId')
-  async getExportJobStatus(@Param('jobId') jobId: string) {
-    const job = await this.exportQueue.getJob(jobId);
-    
-    if (!job) throw new BadRequestException('Export job not found');
-
-    const state = await job.getState();
-    const progress = job.progress();
-    const result = await job.finished().catch(() => null);
-    
-
-    return {
-      jobId: job.id,
-      status: state,
-      progress,
-      result
-    };
-  }
 }

@@ -1,6 +1,7 @@
 import { Processor, Process } from "@nestjs/bull";
 import type { Job } from "bull";
 import { VehicleService } from "src/vehicle/vehicle.service";
+import { NotificationService } from "src/notification/notification.service";
 import * as fs from 'fs';
 import * as path from 'path';
 import { console } from "inspector";
@@ -8,7 +9,10 @@ import { console } from "inspector";
 @Processor('vehicle-export')
 export class ExportVehicleProcessor{
 
-    constructor(private readonly vehicleService: VehicleService) {}
+    constructor(
+        private readonly vehicleService: VehicleService,
+        private readonly notificationService: NotificationService
+    ) {}
 
     @Process('export-task')
     async handleExportJob(job:Job<{ years?: number}>){
@@ -19,6 +23,15 @@ export class ExportVehicleProcessor{
 
         if(vehicles.length == 0){
             console.log(`No vehicles found older than ${years} years for export.`);
+
+            // Emit notification for Zero records
+            this.notificationService.notifyExportComplete({
+                jobId: job.id.toString(),
+                filename: '',
+                recordCount: 0,
+                years: years || 5,
+            });
+
             return {
                 status: 'done',
                 recordCount: 0,
@@ -39,6 +52,14 @@ export class ExportVehicleProcessor{
         fs.writeFileSync(filePath, csvContent);
 
         console.log(`Export job with id: ${job.id} completed.`);
+
+        // Emit WebSocket notification on success
+        this.notificationService.notifyExportComplete({
+            jobId: job.id.toString(),
+            filename,
+            recordCount: vehicles.length,
+            years: years || 5,
+        })
 
         return {
             status: 'done',

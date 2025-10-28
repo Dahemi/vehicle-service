@@ -3,7 +3,7 @@ import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vehicle } from './entities/vehicle.entity';
-import { Like, Repository } from 'typeorm';
+import { LessThan, Like, Repository } from 'typeorm';
 
 @Injectable()
 export class VehicleService {
@@ -12,7 +12,6 @@ export class VehicleService {
     @InjectRepository(Vehicle)
     private vehicleRepository: Repository<Vehicle>,
   ){}
-
 
 
   findAll(
@@ -73,32 +72,19 @@ export class VehicleService {
     await this.vehicleRepository.remove(existing);
     return vehicleToReturn as Vehicle;
   }
-  
-
-  // wildcard search on car_model 
-  /**
-   * ADDED TO 'FINDALL' METHOD
-   * async searchByModel(search:string): Promise<Vehicle[]> {
-
-    return this.vehicleRepository.find({
-      where:[
-        { car_model: Like(`${search}%`) }
-      ]
-    })
-  }
-   */
 
   async findOlderThan(years: number): Promise<Vehicle[]> {
-    const cutoffDate = new Date();
-    cutoffDate.setFullYear(cutoffDate.getFullYear() - years);
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - years);
 
-    return this.vehicleRepository
-      .createQueryBuilder('vehicle')
-      .where('vehicle.manufactured_date < :cutoffDate', { 
-        cutoffDate: cutoffDate.toISOString().split('T')[0] 
-      })
-      .orderBy('vehicle.manufactured_date', 'ASC')
-      .getMany();
+    return this.vehicleRepository.find({
+      where: {
+        manufactured_date: LessThan(today.toISOString().split('T')[0]), // extracts date part only
+      },
+      order:{
+        manufactured_date: 'ASC',
+      }
+    })
   }
   
 
