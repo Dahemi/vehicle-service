@@ -6,11 +6,13 @@ import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
 import { ImportModule } from './import/import.module';
+import { ExportModule } from './export/export.module';
 
 @Module({
   imports: [
     VehicleModule,
     ImportModule,
+    ExportModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver:ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql')
@@ -31,12 +33,6 @@ import { ImportModule } from './import/import.module';
         port:6379
       }
     })
-    /**
-     * initializes Bull with your Redis instance.
-     * You only do this once at the top level.
-     * If later you deploy to Docker Compose, 
-     * this host will change to the container name (e.g., redis).
-     */
   ],
   controllers: [],
   providers: [],

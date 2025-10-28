@@ -7,14 +7,18 @@ import { ImportModule } from 'src/import/import.module';
 import { VehicleController } from './vehicle.controller';
 import { BullModule } from '@nestjs/bull';
 import { MulterModule } from '@nestjs/platform-express';
-
+import { ExportModule } from 'src/export/export.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Vehicle]),
     forwardRef(() => ImportModule),
+    forwardRef(() => ExportModule),
     BullModule.registerQueue({
       name: 'vehicle-import',
+    }),
+    BullModule.registerQueue({
+      name: 'vehicle-export',
     }),
     MulterModule.register({
       dest: './uploads',

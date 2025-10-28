@@ -87,6 +87,19 @@ export class VehicleService {
     })
   }
    */
+
+  async findOlderThan(years: number): Promise<Vehicle[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setFullYear(cutoffDate.getFullYear() - years);
+
+    return this.vehicleRepository
+      .createQueryBuilder('vehicle')
+      .where('vehicle.manufactured_date < :cutoffDate', { 
+        cutoffDate: cutoffDate.toISOString().split('T')[0] 
+      })
+      .orderBy('vehicle.manufactured_date', 'ASC')
+      .getMany();
+  }
   
 
 }

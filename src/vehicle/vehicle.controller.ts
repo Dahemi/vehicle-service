@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException, Param } from '@nestjs/common';
+import { Controller, Post,Get, Body,UseInterceptors, UploadedFile, BadRequestException, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import type { File as MulterFile } from 'multer';
@@ -10,11 +10,12 @@ import type { Queue } from 'bull';
 export class VehicleController {
   constructor(
     @InjectQueue('vehicle-import') private vehicleQueue: Queue,
+    @InjectQueue('vehicle-export') private exportQueue: Queue,
   ) {}
 
   @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
+  @UseInterceptors( // handles file parsing
+    FileInterceptor('file', { // use parsed file
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
@@ -50,16 +51,13 @@ export class VehicleController {
   }
 
 
-  
   @Post('job-status/:jobId')
   async getJobStatus(@Param('jobId') jobId: string) {
 
     // retireive the job from the queue using the provided jobId
     const job = await this.vehicleQueue.getJob(jobId);
     
-    if (!job) {
-      throw new BadRequestException('Job not found');
-    }
+    if (!job) throw new BadRequestException('Job not found');
 
     const state = await job.getState();
     const progress = job.progress();
@@ -68,7 +66,39 @@ export class VehicleController {
       jobId: job.id,
       status: state,
       progress,
-      result: await job.finished().catch(() => null), // get the job result of completed
+      result: await job.finished().catch(() => null), // get the job result if completed
+    };
+  }
+
+  @Post('export')
+  async exportVehicles(@Body('years') years?:number) {
+    const yearsToExport = years || 5;
+    const job = await this.exportQueue.add('export-task', {years: yearsToExport});
+
+    return {
+      message: `Export job started for vehicles older than ${yearsToExport} years`,
+      jobId: job.id,
+      status: 'queued',
+      years: yearsToExport,
+    };
+  }
+
+  @Get('export-status/:jobId')
+  async getExportJobStatus(@Param('jobId') jobId: string) {
+    const job = await this.exportQueue.getJob(jobId);
+    
+    if (!job) throw new BadRequestException('Export job not found');
+
+    const state = await job.getState();
+    const progress = job.progress();
+    const result = await job.finished().catch(() => null);
+    
+
+    return {
+      jobId: job.id,
+      status: state,
+      progress,
+      result
     };
   }
 }

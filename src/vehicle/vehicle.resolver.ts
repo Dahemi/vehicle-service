@@ -51,10 +51,5 @@ export class VehicleResolver {
     const res = await this.importService.queueVehicleImport(filePath);
     return res;
   }
-  // when this mutation is called, 
-  /**
-   * NestJS adds job to queue in Redis
-   * worker picks it up
-   * executes logic in background
-   */
+  
 }
