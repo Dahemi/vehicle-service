@@ -1,9 +1,11 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Directive, ID } from '@nestjs/graphql';
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Entity } from 'typeorm';
 import { differenceInYears } from 'date-fns';
 
 @ObjectType()
+@Directive('@key(fields: "id")')
+@Directive('@key(fields: "vin")')
 @Entity()
 export class Vehicle {
   

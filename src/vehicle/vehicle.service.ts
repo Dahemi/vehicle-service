@@ -86,6 +86,14 @@ export class VehicleService {
       }
     })
   }
+
+  async findById(id:string): Promise<Vehicle | null>{
+    return this.vehicleRepository.findOneBy({id});
+  }
+
+  async findByVin(vin:string): Promise<Vehicle | null>{
+    return this.vehicleRepository.findOneBy({vin});
+  }
   
 
 }

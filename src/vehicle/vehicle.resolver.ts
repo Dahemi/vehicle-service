@@ -3,7 +3,8 @@ import { VehicleService } from './vehicle.service';
 import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
-import { ImportService } from 'src/import/import.service';
+import { ImportService } from '../import/import.service';
+import { ResolveReference, ResolveField, Parent } from '@nestjs/graphql';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
@@ -38,18 +39,21 @@ export class VehicleResolver {
     return await this.vehicleService.delete(id);
   }
 
-  /**
-   * @Query(() => [Vehicle])
-   * searchVehiclesByModel(@Args('search') search: string):Promise<Vehicle[]> {
-      return this.vehicleService.searchByModel(search);
-  }
-   */
-  
-
   @Mutation(() => String)
   async importVehicles(@Args('filePath') filePath: string):Promise<string> {
     const res = await this.importService.queueVehicleImport(filePath);
     return res;
   }
-  
+
+
+  @ResolveReference()
+  resolveReference(reference:{ __typename: string; id?: string; vin?: string; }) {
+    if(reference.id){
+      return this.vehicleService.findById(reference.id);
+    }
+    if(reference.vin){
+      return this.vehicleService.findByVin(reference.vin);
+    }
+    return null;
+  }
 }

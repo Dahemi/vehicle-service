@@ -8,6 +8,7 @@ import { BullModule } from '@nestjs/bull';
 import { ImportModule } from './import/import.module';
 import { ExportModule } from './export/export.module';
 import { NotificationModule } from './notification/notification.module';
+import {ApolloFederationDriver, ApolloFederationDriverConfig} from '@nestjs/apollo'
 
 @Module({
   imports: [
@@ -15,9 +16,12 @@ import { NotificationModule } from './notification/notification.module';
     ImportModule,
     ExportModule,
     NotificationModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver:ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql')
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver:ApolloFederationDriver,
+      autoSchemaFile: {
+        path: join(process.cwd(), 'src/graphql-schema.gql'),
+        federation: 2,
+      },
     }),
     TypeOrmModule.forRoot({
       type:'postgres',
