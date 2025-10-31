@@ -24,6 +24,11 @@ export class VehicleResolver {
     return this.vehicleService.findAll(page, limit, sortBy, search);
   }
 
+  @Query(() => Vehicle, { name: 'findVehicleByVIN', nullable: true })
+  findByVIN(@Args('vin') vin: string): Promise<Vehicle | null> {
+    return this.vehicleService.findByVin(vin);
+}
+
   @Mutation(() => Vehicle)
   createVehicle(@Args('createVehicleInput') createVehicleInput: CreateVehicleInput) {
     return this.vehicleService.create(createVehicleInput);

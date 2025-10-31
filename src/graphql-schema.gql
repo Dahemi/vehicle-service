@@ -23,6 +23,7 @@ scalar DateTime
 
 type Query {
   findAllVehicles(page: Int! = 1, limit: Int! = 10, sortBy: String, search: String): [Vehicle!]!
+  findVehicleByVIN(vin: String!): Vehicle
 }
 
 type Mutation {
