@@ -4,7 +4,7 @@ import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
 import { ImportService } from '../import/import.service';
-import { ResolveReference, ResolveField, Parent } from '@nestjs/graphql';
+import { ResolveReference } from '@nestjs/graphql';
 
 @Resolver(() => Vehicle)
 export class VehicleResolver {
@@ -52,13 +52,7 @@ export class VehicleResolver {
 
 
   @ResolveReference()
-  resolveReference(reference:{ __typename: string; id?: string; vin?: string; }) {
-    if(reference.id){
-      return this.vehicleService.findById(reference.id);
-    }
-    if(reference.vin){
+  resolveReference(reference:{ __typename: string; vin: string; }) {
       return this.vehicleService.findByVin(reference.vin);
-    }
-    return null;
   }
 }

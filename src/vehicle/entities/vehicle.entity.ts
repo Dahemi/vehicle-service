@@ -4,7 +4,6 @@ import { Entity } from 'typeorm';
 import { differenceInYears } from 'date-fns';
 
 @ObjectType()
-@Directive('@key(fields: "id")')
 @Directive('@key(fields: "vin")')
 @Entity()
 export class Vehicle {
