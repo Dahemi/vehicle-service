@@ -1,73 +1,65 @@
 import { Processor, Process } from "@nestjs/bull";
 import type { Job } from "bull";
 import { VehicleService } from "../../vehicle/vehicle.service";
-import * as XLSX from 'xlsx';
+import { NotificationService } from "src/notification/notification.service";
 import * as fs from 'fs';
 import csvParser from 'csv-parser';
 
 @Processor('vehicle-import')
 export class ImportVehicleProcessor {
 
-    constructor(private readonly vehicleService: VehicleService) {}
+    constructor(
+        private readonly vehicleService: VehicleService,
+        private readonly notificationService: NotificationService // ✅ Inject notification service
+    ) {}
 
     @Process('import-task')
     async handleImportJob(job: Job<{filePath: string}>) {
+        try {
+            console.log(`Processing file: ${job.data.filePath}`);
+            const { filePath } = job.data;
 
-        console.log(`Processing file: ${job.data.filePath}`);
-        const { filePath } = job.data;
+            const isCSV = filePath.endsWith('.csv');
+            if (!isCSV) throw new Error('Unsupported file format.');
+            
+            const recordCount = await this.parseCsv(filePath);
+            
+            fs.unlinkSync(filePath);
+            console.log(`Deleted file: ${filePath}`);
 
-        const isExcel = filePath.endsWith('.xlsx') || filePath.endsWith('.xls');
-        const isCSV = filePath.endsWith('.csv');
+            this.notificationService.notifyImportComplete({
+                jobId: job.id.toString(),
+                recordCount,
+                filename: filePath.split(/[\\/]/).pop() || 'unknown',
+            });
 
-        if (isExcel) {
-            await this.parseExcel(filePath);
-        } else if (isCSV) {
-            await this.parseCsv(filePath);
-        } else {
-            throw new Error('Unsupported file format. Please upload a CSV or Excel file.');
-        }
-
-        fs.unlinkSync(filePath);
-        console.log(`Deleted file: ${filePath}`);
-
-        return { status: 'done', file: filePath };
-    }
-
-    
-    private async parseExcel(filePath: string) {
-        const workbook = XLSX.readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const data = XLSX.utils.sheet_to_json(worksheet);
-
-        for (const row of data) {
-            await this.saveVehicle(row);
+            return { status: 'done', file: filePath, recordCount };
+        }catch (error) {
+            this.notificationService.notifyImportFailure({
+                jobId: job.id.toString(),
+                error: error.message || 'Unknown error occurred',
+            });
+            throw error;
         }
     }
 
-    private async parseCsv(filePath: string): Promise<void> {
+    private async parseCsv(filePath: string): Promise<number> {
         return new Promise((resolve, reject) => {
             const vehicles: any[] = [];
             fs.createReadStream(filePath)
                 .pipe(csvParser())
-                 // each parsed row is pushed to vehicles array
                 .on('data', (row) => vehicles.push(row))
-
-                 // process all rows
                 .on('end', async () => {
                     for (const row of vehicles) {
-                        // sequentially save each to database
                         await this.saveVehicle(row);
                     }
-                    resolve();
+                    resolve(vehicles.length); 
                 })
                 .on('error', reject);
         });
     }
 
     private async saveVehicle(row: any) {
-        
-        // data mapping
         const vehicleData = {
             first_name: row.first_name || row['First Name'],
             last_name: row.last_name || row['Last Name'],
@@ -78,7 +70,6 @@ export class ImportVehicleProcessor {
             manufactured_date: row.manufactured_date || row['Manufactured Date'],
         };
 
-        
         await this.vehicleService.create(vehicleData);
         console.log(`Saved vehicle: ${vehicleData.vin}`);
     }

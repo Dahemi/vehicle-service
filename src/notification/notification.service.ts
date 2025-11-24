@@ -21,4 +21,19 @@ export class NotificationService {
     }){
         this.notificationGateway.emitExportFailure(data);
     }
+
+    notifyImportComplete(data: {
+        jobId: string;
+        recordCount: number;
+        filename: string;
+    }){
+        this.notificationGateway.emitImportComplete(data);
+    }
+
+    notifyImportFailure(data: {
+        jobId: string;
+        error: string;
+    }){
+        this.notificationGateway.emitImportFailure(data);
+    }
 }

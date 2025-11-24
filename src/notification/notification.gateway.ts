@@ -38,4 +38,20 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     console.log(`Emit export-failed event for job: ${data.jobId}`);
   }
 
+  emitImportComplete(data: {
+    jobId: string;
+    recordCount: number;
+    filename: string;
+  }){
+    this.server.emit('import-completed',data);
+    console.log(`Emit import-completed event for job: ${data.jobId}`);
+  }
+
+  emitImportFailure(data: {
+    jobId: string;
+    error: string;
+  }){
+    this.server.emit('import-failed',data);
+    console.log(`Emit import-failed event for job: ${data.jobId}`);
+  }
 }

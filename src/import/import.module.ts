@@ -1,9 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { ImportService } from './import.service';
 import { BullModule } from '@nestjs/bull';
 import { VehicleModule } from 'src/vehicle/vehicle.module';
 import { ImportVehicleProcessor } from './processors/import-vehicle.processor';
-
+import { NotificationModule } from 'src/notification/notification.module'
 
 @Module({
   imports: [
@@ -11,12 +10,11 @@ import { ImportVehicleProcessor } from './processors/import-vehicle.processor';
     BullModule.registerQueue({
       name: 'vehicle-import',
     }),
-    forwardRef(() => VehicleModule)
+    forwardRef(() => VehicleModule),
+    NotificationModule,
   ],
   providers: [ 
-    ImportService,  
     ImportVehicleProcessor
   ],
-  exports: [ImportService],
 })
 export class ImportModule {}

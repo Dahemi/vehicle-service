@@ -50,29 +50,14 @@ export class VehicleController {
     };
   }
 
-
-  @Post('job-status/:jobId')
-  async getJobStatus(@Param('jobId') jobId: string) {
-
-    // retireive the job from the queue using the provided jobId
-    const job = await this.vehicleQueue.getJob(jobId);
-    
-    if (!job) throw new BadRequestException('Job not found');
-
-    const state = await job.getState();
-    const progress = job.progress();
-
-    return {
-      jobId: job.id,
-      status: state,
-      progress,
-      result: await job.finished().catch(() => null), // get the job result if completed
-    };
-  }
-
   @Post('export')
   async exportVehicles(@Body('years') years?:number) {
     const yearsToExport = years || 5;
+
+    if (yearsToExport < 1 || yearsToExport > 100) {
+      throw new BadRequestException('Years must be between 1 and 100');
+    }
+    
     const job = await this.exportQueue.add('export-task', {years: yearsToExport});
 
     return {

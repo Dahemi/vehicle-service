@@ -38,8 +38,7 @@ import {ApolloFederationDriver, ApolloFederationDriverConfig} from '@nestjs/apol
         host:'localhost',
         port:6379
       }
-    }),
-    NotificationModule
+    })
   ],
   controllers: [],
   providers: [],

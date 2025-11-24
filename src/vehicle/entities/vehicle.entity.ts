@@ -21,7 +21,7 @@ export class Vehicle {
   last_name:string;
 
   @Field()
-  @Column({unique:false})
+  @Column()
   email:string;
 
   @Field()

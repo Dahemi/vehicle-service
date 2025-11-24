@@ -30,7 +30,6 @@ type Mutation {
   createVehicle(createVehicleInput: CreateVehicleInput!): Vehicle!
   updateVehicle(updateVehicleInput: UpdateVehicleInput!): Vehicle!
   deleteVehicle(id: String!): Vehicle!
-  importVehicles(filePath: String!): String!
 }
 
 input CreateVehicleInput {
